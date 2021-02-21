@@ -1,10 +1,12 @@
 console.log("Content injected.");
 
-function query_product(product) {
+const SEARCH_PRODUCT_URL = (product) => `https://api.wegmans.io/products/search?query=${product}&api-version=2018-10-18&subscription-key=${API_KEY}`;
+const PRODUCT_INFO_URL = (sku) => `https://api.wegmans.io/products/${sku}?api-version=2018-10-18&subscription-key=${API_KEY}`;
+
+function query_api(url) {
 	return new Promise ((resolve, reject) => {
-		var URL = `https://api.wegmans.io/products/search?query=${product}&api-version=2018-10-18&subscription-key=${API_KEY}`;
 		var req = new XMLHttpRequest();
-		req.open("GET", URL);
+		req.open("GET", url);
 		req.onload = () => resolve(req.responseText);
 		req.onerror = () => reject(this.status);
 		req.send();
@@ -13,8 +15,6 @@ function query_product(product) {
 
 chrome.runtime.onMessage.addListener(
 	function (message, sender, response) {
-		console.log(message.type);
-
 		var loading = document.getElementsByClassName("load-app");
 		if (loading.length != 0) {
 			response("Please wait for the page to load before running the extension.");
@@ -42,11 +42,23 @@ chrome.runtime.onMessage.addListener(
 
 		var promises = [];
 		for (product of table)
-			promises.push(query_product(product));
+			promises.push(query_api(SEARCH_PRODUCT_URL(product)));
 
-		response(Promise.all(promises).then((values) => {
-			console.log(values);
-		}));
-		return
+		Promise.all(promises).then((values) => {
+			var skuPromises = [];
+			for (query of values) {
+				var query_data = JSON.parse(query);
+				var first_match = query_data.results[0];
+				var sku = first_match.sku;
+				skuPromises.push(query_api(PRODUCT_INFO_URL(sku)));
+			}
+
+			Promise.all(skuPromises).then((values) => {
+				console.log(values);
+				response(values);
+			})
+		});
+
+		return true; // wait for promises
 	}
 )

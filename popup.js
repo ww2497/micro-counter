@@ -10,5 +10,6 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 })
 
 function updatePopup(input) {
+	document.body.innerHTML = input;
 	console.log(input);
 }
