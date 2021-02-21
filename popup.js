@@ -10,9 +10,6 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 })
 
 function updatePopup(result) {
-	let productNutrition = result.products;
-	let totalNutrition = result.total;
-	console.log(productNutrition);
-	console.log(totalNutrition);
-	console.log(Object.entries(productNutrition));
+	console.log(result);
+	document.body.innerHTML = result;
 }

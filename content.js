@@ -69,10 +69,25 @@ chrome.runtime.onMessage.addListener(
 					}
 					productNutrition[product_data.name] = nutritionValues;
 				}
-				console.log(productNutrition);
-				console.log(totalNutrition);
 
-				response({products: productNutrition, total: totalNutrition});
+				var table = document.createElement("table");
+
+				// create table head
+				var head = document.createElement("thead");
+				table.appendChild(head);
+				var headRow = document.createElement("tr");
+				head.appendChild(headRow);
+				for (nutrient in totalNutrition) {
+					var headerCell = document.createElement("th");
+					headerCell.innerHTML = nutrient;
+					headRow.appendChild(headerCell);
+				}
+
+				// create table body
+
+
+				console.log(table);
+				response(table.outerHTML);
 			})
 		});
 
