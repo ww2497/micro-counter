@@ -82,6 +82,7 @@ chrome.runtime.onMessage.addListener(
 				var headerCell = document.createElement("th");
 				headerCell.innerHTML = "Product"
 				headRow.append(headerCell);
+
 				for (nutrient in totalNutrition) {
 					var headerCell = document.createElement("th");
 					headerCell.innerHTML = nutrient;
@@ -108,6 +109,27 @@ chrome.runtime.onMessage.addListener(
 							bodyCell.innerHTML = product[nutrient];
 						bodyRow.append(bodyCell);
 					}
+				}
+
+				// create table footer
+				var footer = document.createElement("tfoot");
+				table.append(footer);
+
+				// empty first cell
+				var bodyRow = headRow.cloneNode(true);
+				bodyRow.childNodes[0].innerHTML = "";
+				footer.append(bodyRow);
+
+				var bodyRow = document.createElement("tr");
+				footer.append(bodyRow);
+
+				var bodyCell = document.createElement("td");
+				bodyRow.append(bodyCell);
+
+				for (nutrient in totalNutrition) {
+					var bodyCell = document.createElement("td");
+					bodyCell.innerHTML = totalNutrition[nutrient];
+					bodyRow.append(bodyCell);
 				}
 
 				console.log(table);
