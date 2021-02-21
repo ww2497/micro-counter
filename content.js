@@ -75,8 +75,13 @@ chrome.runtime.onMessage.addListener(
 				// create table head
 				var head = document.createElement("thead");
 				table.appendChild(head);
+
 				var headRow = document.createElement("tr");
 				head.appendChild(headRow);
+
+				var headerCell = document.createElement("th");
+				headerCell.innerHTML = "Product"
+				headRow.append(headerCell);
 				for (nutrient in totalNutrition) {
 					var headerCell = document.createElement("th");
 					headerCell.innerHTML = nutrient;
@@ -84,7 +89,26 @@ chrome.runtime.onMessage.addListener(
 				}
 
 				// create table body
+				var body = document.createElement("tbody");
+				table.append(body);
 
+				for (productName in productNutrition) {
+					var product = productNutrition[productName];
+
+					var bodyRow = document.createElement("tr");
+					body.append(bodyRow);
+
+					var bodyCell = document.createElement("td");
+					bodyCell.innerHTML = productName;
+					bodyRow.append(bodyCell);
+
+					for (nutrient in totalNutrition) {
+						var bodyCell = document.createElement("td");
+						if (nutrient in product)
+							bodyCell.innerHTML = product[nutrient];
+						bodyRow.append(bodyCell);
+					}
+				}
 
 				console.log(table);
 				response(table.outerHTML);
