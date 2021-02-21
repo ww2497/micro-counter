@@ -1,15 +1,14 @@
-let changeColor = document.getElementById('changeColor');
+chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+	var url = tabs[0].url;
+	if (url.includes("https://shop.wegmans.com/account/order-history/order/")) {
+		chrome.tabs.sendMessage(tabs[0].id, {type: "order"}, updatePopup);
+	} else if (url.includes("https://shop.wegmans.com/checkout/v2/cart")) {
+		chrome.tabs.sendMessage(tabs[0].id, {type: "cart"}, updatePopup);
+	} else {
+		chrome.tabs.sendMessage(tabs[0].id, {type: "side-cart"}, updatePopup);
+	}
+})
 
-chrome.storage.sync.get('color', function(data) {
-	changeColor.style.backgroundColor = data.color;
-	changeColor.setAttribute('value', data.color);
-});
-
-changeColor.onclick = function(element) {
-	let color = element.target.value;
-	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-	  chrome.tabs.executeScript(
-			tabs[0].id,
-			{code: 'document.body.style.backgroundColor = "' + color + '";'});
-	});
-};
+function updatePopup(input) {
+	console.log(input);
+}
