@@ -3,7 +3,7 @@ console.log("Content injected.");
 const SEARCH_PRODUCT_URL = (product) => `https://api.wegmans.io/products/search?query=${product}&api-version=2018-10-18&subscription-key=${API_KEY}`;
 const PRODUCT_INFO_URL = (sku) => `https://api.wegmans.io/products/${sku}?api-version=2018-10-18&subscription-key=${API_KEY}`;
 
-function query_api(url) {
+function call_api(url) {
 	return new Promise ((resolve, reject) => {
 		var req = new XMLHttpRequest();
 		req.open("GET", url);
@@ -42,7 +42,7 @@ chrome.runtime.onMessage.addListener(
 
 		var promises = [];
 		for (product of table)
-			promises.push(query_api(SEARCH_PRODUCT_URL(product)));
+			promises.push(call_api(SEARCH_PRODUCT_URL(product)));
 
 		Promise.all(promises).then((values) => {
 			var skuPromises = [];
@@ -50,7 +50,7 @@ chrome.runtime.onMessage.addListener(
 				var query_data = JSON.parse(query);
 				var first_match = query_data.results[0];
 				var sku = first_match.sku;
-				skuPromises.push(query_api(PRODUCT_INFO_URL(sku)));
+				skuPromises.push(call_api(PRODUCT_INFO_URL(sku)));
 			}
 
 			Promise.all(skuPromises).then((values) => {
