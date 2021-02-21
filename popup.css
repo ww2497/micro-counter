@@ -16,6 +16,7 @@ table {
 th {
 	white-space: nowrap;
 	padding: 0.5rem;
+	padding-right: 0.25rem;
 	background-color: var(--red);
 	color: white;
 }
