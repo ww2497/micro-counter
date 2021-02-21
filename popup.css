@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+:root {
+	--red: #ce3f24;
+}
+
+body {
+	font-family: 'Roboto', sans-serif;
+}
+
+table {
+	text-align: right;
+	border-spacing: 0;
+}
+
+th {
+	white-space: nowrap;
+	padding: 0.5rem;
+	background-color: var(--red);
+	color: white;
+}
+
+td {
+	white-space: nowrap;
+	padding: 0.25rem;
+	border: 0.01em solid #eee;
+}

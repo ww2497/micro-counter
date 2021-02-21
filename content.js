@@ -124,11 +124,12 @@ chrome.runtime.onMessage.addListener(
 				footer.append(bodyRow);
 
 				var bodyCell = document.createElement("td");
+				bodyCell.innerHTML = "Total";
 				bodyRow.append(bodyCell);
 
 				for (nutrient in totalNutrition) {
 					var bodyCell = document.createElement("td");
-					bodyCell.innerHTML = totalNutrition[nutrient];
+					bodyCell.innerHTML = totalNutrition[nutrient].toFixed(2);
 					bodyRow.append(bodyCell);
 				}
 
