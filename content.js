@@ -3,7 +3,7 @@ console.log("Content injected.");
 const SEARCH_PRODUCT_URL = (product) => `https://api.wegmans.io/products/search?query=${product}&api-version=2018-10-18&subscription-key=${API_KEY}`;
 const PRODUCT_INFO_URL = (sku) => `https://api.wegmans.io/products/${sku}?api-version=2018-10-18&subscription-key=${API_KEY}`;
 
-function call_api(url) {
+function callApi(url) {
 	return new Promise ((resolve, reject) => {
 		var req = new XMLHttpRequest();
 		req.open("GET", url);
@@ -42,7 +42,7 @@ chrome.runtime.onMessage.addListener(
 
 		var promises = [];
 		for (product of table)
-			promises.push(call_api(SEARCH_PRODUCT_URL(product)));
+			promises.push(callApi(SEARCH_PRODUCT_URL(product)));
 
 		Promise.all(promises).then((values) => {
 			var skuPromises = [];
@@ -50,12 +50,29 @@ chrome.runtime.onMessage.addListener(
 				var query_data = JSON.parse(query);
 				var first_match = query_data.results[0];
 				var sku = first_match.sku;
-				skuPromises.push(call_api(PRODUCT_INFO_URL(sku)));
+				skuPromises.push(callApi(PRODUCT_INFO_URL(sku)));
 			}
 
 			Promise.all(skuPromises).then((values) => {
-				console.log(values);
-				response(values);
+				var productNutrition = {};
+				var totalNutrition = {};
+				for (product of values) {
+					var nutritionValues = {};
+					var product_data = JSON.parse(product);
+					var nutrients = product_data.nutrients;
+					for (nutrient of nutrients) {
+						nutritionValues[nutrient.type] = nutrient.dailyValuePercent;
+						if (!(nutrient.type in totalNutrition))
+							totalNutrition[nutrient.type] = nutrient.dailyValuePercent;
+						else
+							totalNutrition[nutrient.type] = totalNutrition[nutrient.type] + nutrient.dailyValuePercent;
+					}
+					productNutrition[product_data.name] = nutritionValues;
+				}
+				console.log(productNutrition);
+				console.log(totalNutrition);
+
+				response({products: productNutrition, total: totalNutrition});
 			})
 		});
 
