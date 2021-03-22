@@ -1,6 +1,10 @@
-# nutrition-counter
+# micro-counter
+
+###### (Yes, the name is a play on words for Micro Center)
 
 2021 Hackathon submission for BrickHack 7
+
+Winner of the Best API and Most Original Use of the Wegmans API prize category
 
 ## Setup
 
